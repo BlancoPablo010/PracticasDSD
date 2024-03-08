@@ -45,11 +45,19 @@ calculator_1_svc(operation arg1,  struct svc_req *rqstp)
 			return(&result);
             break;
     }
-/*
-    printf("Resultado del servidor: %f\n", operationResult);
-
-	*operationResultp = operationResult;
-*/
+	
 	return &result;
 
+}
+
+calculator_res *
+calculator_2_svc(operationMatrix arg1,  struct svc_req *rqstp)
+{
+	static calculator_res  result;
+
+	/*
+	 * insert server code here
+	 */
+
+	return &result;
 }

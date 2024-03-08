@@ -72,6 +72,24 @@ xdr_Operation (XDR *xdrs, Operation *objp)
 }
 
 bool_t
+xdr_OperationMatrix (XDR *xdrs, OperationMatrix *objp)
+{
+	register int32_t *buf;
+
+	 if (!xdr_int (xdrs, &objp->size))
+		 return FALSE;
+	 if (!xdr_matrix (xdrs, &objp->firstMatrix))
+		 return FALSE;
+	 if (!xdr_operatorType (xdrs, &objp->operator))
+		 return FALSE;
+	 if (!xdr_matrix (xdrs, &objp->secondMatrix))
+		 return FALSE;
+	 if (!xdr_double (xdrs, &objp->escalar))
+		 return FALSE;
+	return TRUE;
+}
+
+bool_t
 xdr_calculator_res (XDR *xdrs, calculator_res *objp)
 {
 	register int32_t *buf;
@@ -84,6 +102,8 @@ xdr_calculator_res (XDR *xdrs, calculator_res *objp)
 			 return FALSE;
 		break;
 	case 1:
+		 if (!xdr_matrix (xdrs, &objp->calculator_res_u.resMatrix))
+			 return FALSE;
 		break;
 	default:
 		break;

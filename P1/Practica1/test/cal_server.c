@@ -9,17 +9,49 @@
 calculator_res *
 calculator_1_svc(operation arg1,  struct svc_req *rqstp)
 {
-	static calculator_res  result;
+	static calculator_res result;
 
-	/*
-	 * insert server code here
-	 */
+	//double operationResult;
 
+	double *operationResultp;
+
+	xdr_free(xdr_calculator_res, &result);
+
+	operationResultp = &result.calculator_res_u.res;
+
+    // Realizar la operación y mostrar el resultado
+    switch (arg1.operator[0]) {
+        case '+':
+            *operationResultp = arg1.firstNumber + arg1.secondNumber;
+            break;
+        case '-':
+            *operationResultp = arg1.firstNumber - arg1.secondNumber;
+            break;
+        case '*':
+            *operationResultp = arg1.firstNumber * arg1.secondNumber;
+            break;
+        case '/':
+            if (arg1.secondNumber != 0) {
+                *operationResultp = arg1.firstNumber / arg1.secondNumber;
+            } else {
+                result.errnum = 2;
+				return(&result);
+
+            }
+            break;
+        default:
+
+            result.errnum = 3;
+			return(&result);
+            break;
+    }
+	
 	return &result;
+
 }
 
 calculator_res *
-calculator_2_svc(operation arg1,  struct svc_req *rqstp)
+calculator_2_svc(operationMatrix arg1,  struct svc_req *rqstp)
 {
 	static calculator_res  result;
 

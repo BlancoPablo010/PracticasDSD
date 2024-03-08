@@ -39,10 +39,20 @@ struct Operation {
 };
 typedef struct Operation Operation;
 
+struct OperationMatrix {
+	int size;
+	matrix firstMatrix;
+	operatorType operator;
+	matrix secondMatrix;
+	double escalar;
+};
+typedef struct OperationMatrix OperationMatrix;
+
 struct calculator_res {
 	int errnum;
 	union {
 		double res;
+		matrix resMatrix;
 	} calculator_res_u;
 };
 typedef struct calculator_res calculator_res;
@@ -65,8 +75,8 @@ extern int calprog_1_freeresult ();
 #define CALVER 2
 
 #if defined(__STDC__) || defined(__cplusplus)
-extern  calculator_res * calculator_2(operation , CLIENT *);
-extern  calculator_res * calculator_2_svc(operation , struct svc_req *);
+extern  calculator_res * calculator_2(operationMatrix , CLIENT *);
+extern  calculator_res * calculator_2_svc(operationMatrix , struct svc_req *);
 extern int calprog_2_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
@@ -84,6 +94,7 @@ extern  bool_t xdr_operatorType (XDR *, operatorType*);
 extern  bool_t xdr_operation (XDR *, operation*);
 extern  bool_t xdr_operationMatrix (XDR *, operationMatrix*);
 extern  bool_t xdr_Operation (XDR *, Operation*);
+extern  bool_t xdr_OperationMatrix (XDR *, OperationMatrix*);
 extern  bool_t xdr_calculator_res (XDR *, calculator_res*);
 
 #else /* K&R C */
@@ -93,6 +104,7 @@ extern bool_t xdr_operatorType ();
 extern bool_t xdr_operation ();
 extern bool_t xdr_operationMatrix ();
 extern bool_t xdr_Operation ();
+extern bool_t xdr_OperationMatrix ();
 extern bool_t xdr_calculator_res ();
 
 #endif /* K&R C */

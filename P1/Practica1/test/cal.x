@@ -13,6 +13,14 @@
     double secondNumber;               /* segundo double de la operación */
   };
 
+  struct OperationMatrix{
+    int size;
+    matrix firstMatrix;
+    operatorType operator;
+    matrix secondMatrix;
+    double escalar;
+  };
+
 
   /* La siguiente unión se utiliza para discriminar entre llamadas
    *                 con éxito y llamadas con errores               */
@@ -20,7 +28,7 @@
     case 0:
       double res; /* sin error: resultado de la operación */
     case 1:
-      void; /* sin error: resultado de la operación matricial */
+      matrix resMatrix; /* sin error: resultado de la operación matricial */
     default:
       void;               /* con error: nada */
   };
@@ -31,7 +39,7 @@
       calculator_res CALCULATOR(operation) = 1;
     } = 1;
     version CALVER {
-      calculator_res CALCULATOR(operation) = 1;
+      calculator_res CALCULATOR(operationMatrix) = 1;
     } = 2;
   } = 0x20000155;
 

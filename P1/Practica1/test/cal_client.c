@@ -10,9 +10,26 @@
 void
 calprog_1(char *host)
 {
+	
 	CLIENT *clnt;
 	calculator_res  *result_1;
 	operation calculator_1_arg1;
+
+	calculator_1_arg1.operator = malloc(1);
+
+	char respuesta[1];
+    short int unicaOperacion = 0;
+
+    // Solicitar al usuario que ingrese dos números
+    printf("Ingrese el primer numero: ");
+    scanf("%lf", &calculator_1_arg1.firstNumber);
+
+	printf("Ingrese una operación (+, -, *, /): ");
+    scanf("%s", calculator_1_arg1.operator);
+
+    printf("Ingrese el segundo numero: ");
+    scanf("%lf", &calculator_1_arg1.secondNumber);
+
 
 #ifndef	DEBUG
 	clnt = clnt_create (host, CALPROG, CALVER, "udp");
@@ -25,7 +42,78 @@ calprog_1(char *host)
 	result_1 = calculator_1(calculator_1_arg1, clnt);
 	if (result_1 == (calculator_res *) NULL) {
 		clnt_perror (clnt, "call failed");
+		exit(1);
 	}
+
+	if(result_1->errnum == 2) {
+		printf("Error: Division por cero\n");
+	} else if(result_1->errnum == 3) {
+		printf("Error: Operador invalido\n");
+	} else {
+		printf("Resultado: %f\n", result_1->calculator_res_u.res);
+	
+	}
+
+    printf("¿Quiere realizar otra operación? (y/n):");	
+    scanf("%s", respuesta);
+
+    if (respuesta[0] == 'y') {
+        unicaOperacion = 1;
+    }
+
+	while(unicaOperacion == 1) {
+		// Solicitar al usuario que ingrese dos números
+        printf("¿Quiere utilizar el resultado anterior como el primer número?: (y/n):");
+        scanf("%s", respuesta);
+
+        if(respuesta[0] == 'n')
+        {
+            printf("Ingrese el primer número: ");
+            scanf("%lf", &calculator_1_arg1.firstNumber);
+        } else {
+            calculator_1_arg1.firstNumber = result_1->calculator_res_u.res;
+        }
+
+        // Solicitar al usuario que ingrese la operación
+        printf("Ingrese un operador (+, -, *, /): ");
+        scanf("%s", calculator_1_arg1.operator);
+
+        printf("¿Quiere utilizar el resultado anterior como el segundo número?: (y/n):");
+        scanf("%s", respuesta);
+
+        if(respuesta[0] == 'n')
+        {
+            printf("Ingrese el segundo número: ");
+            scanf("%lf", &calculator_1_arg1.secondNumber);
+        } else {
+            calculator_1_arg1.secondNumber = result_1->calculator_res_u.res;
+        }
+
+		result_1 = calculator_1(calculator_1_arg1, clnt);
+		if (result_1 == (calculator_res *) NULL) {
+			clnt_perror (clnt, "call failed");
+			exit(1);
+		}
+
+		if(result_1->errnum == 2) {
+			printf("Error: Division por cero\n");
+		} else if(result_1->errnum == 3) {
+			printf("Error: Operador invalido\n");
+		} else {
+			printf("Resultado: %f\n", result_1->calculator_res_u.res);
+		
+		}
+
+		printf("¿Quiere realizar otra operación? (y/n):");
+		scanf("%s", respuesta);
+
+		if(respuesta[0] == 'n') {
+			unicaOperacion = 0;
+		}
+	}
+
+	xdr_free(xdr_calculator_res, result_1);
+	free(calculator_1_arg1.operator);
 #ifndef	DEBUG
 	clnt_destroy (clnt);
 #endif	 /* DEBUG */
@@ -37,7 +125,7 @@ calprog_2(char *host)
 {
 	CLIENT *clnt;
 	calculator_res  *result_1;
-	operation calculator_2_arg1;
+	operationMatrix calculator_2_arg1;
 
 #ifndef	DEBUG
 	clnt = clnt_create (host, CALPROG, CALVER, "udp");

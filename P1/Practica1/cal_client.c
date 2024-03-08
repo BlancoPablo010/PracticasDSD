@@ -120,18 +120,63 @@ calprog_1(char *host)
 }
 
 
+void
+calprog_2(char *host)
+{
+	CLIENT *clnt;
+	calculator_res  *result_1;
+	operation calculator_2_arg1;
+
+#ifndef	DEBUG
+	clnt = clnt_create (host, CALPROG, CALVER, "udp");
+	if (clnt == NULL) {
+		clnt_pcreateerror (host);
+		exit (1);
+	}
+#endif	/* DEBUG */
+
+	result_1 = calculator_2(calculator_2_arg1, clnt);
+	if (result_1 == (calculator_res *) NULL) {
+		clnt_perror (clnt, "call failed");
+	}
+#ifndef	DEBUG
+	clnt_destroy (clnt);
+#endif	 /* DEBUG */
+}
+
+
 int
 main (int argc, char *argv[])
 {
 	char *host;
-
-	printf("Llega");
+	int opcion = 0;
 
 	if (argc < 2) {
 		printf ("usage: %s server_host\n", argv[0]);
 		exit (1);
 	}
 	host = argv[1];
-	calprog_1 (host);
+
+	while(opcion == 3) {
+
+		printf("Calculadora:\nSeleccione una opción:\n1. Operación de flotantes.\n2. Operación de matrices.\n3. Salir.\n"); 
+		scanf("%d", &opcion);
+
+		switch(opcion) {
+			case 1:
+				calprog_1 (host);
+				break;
+			case 2:
+				calprog_2 (host);
+				break;
+			case 3:
+				break;
+			default:
+				printf("Opción invalida\n");
+				break;
+		}
+	}
+
+	
 exit (0);
 }
