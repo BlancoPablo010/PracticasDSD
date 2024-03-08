@@ -1,0 +1,60 @@
+$ rpcgen -NCa dir.x  -- Para generar código automaticamente, 
+                     -- N para poner varios parámetros, C normalmente junto con N,
+                     -- a para generar todas las plantillas que se puedan crear
+
+
+RPC                                     C
+
+const DOCENA = 12                       #define DOCENA 12
+
+definiciones de tipo
+
+typedef string tipo_nombref<255>; -->   typedef char* tipo_nombref;
+
+Array
+
+tipocolor paleta[8];              -->   tipocolor paleta[8];
+
+Array Variable
+
+int altura<12>;                   -->   struct {
+                                            u_int altura len;
+                                            int *altura;
+                                        } altura;
+
+puntero
+
+listalementos *siguiente;         -->   listaelementos *siguiente;
+Lee el contenido al que apunta
+el puntero y codificar el contenido.
+Se transferira la codificacion
+
+struct igual
+
+union
+
+RPC
+
+union resultado_leido switch (int errno) {
+    case 0:
+        tipodato dato;
+    default:
+        void;
+}
+
+C 
+
+struct resultado_leido {
+    int errno;
+    union {
+        tipodato dato;
+    } resultado_leido_u;
+};
+typedef struct resultado_leido resultado_leido;
+
+funcionalidades para subir normalmente
+
+que la calculadora soporte operaciones de vectores y matrices
+que pueda agrupar multiples operaciones en una estructura y la resuelva del tiron el servidor
+en vez de tener un unico servidor, tener varios que se comunican entre si, uno que haga las basicas y otro que haga la de vectores
+esto ultimo se hace, comunicando con un servidor, y este a su vez llama a otro servidor
