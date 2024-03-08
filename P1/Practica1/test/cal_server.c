@@ -47,7 +47,6 @@ calculator_1_svc(operation arg1,  struct svc_req *rqstp)
     }
 	
 	return &result;
-
 }
 
 calculator_res *

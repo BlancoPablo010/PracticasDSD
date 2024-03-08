@@ -10,7 +10,6 @@
 void
 calprog_1(char *host)
 {
-	
 	CLIENT *clnt;
 	calculator_res  *result_1;
 	operation calculator_1_arg1;
@@ -30,9 +29,8 @@ calprog_1(char *host)
     printf("Ingrese el segundo numero: ");
     scanf("%lf", &calculator_1_arg1.secondNumber);
 
-
 #ifndef	DEBUG
-	clnt = clnt_create (host, CALPROG, CALVER, "udp");
+	clnt = clnt_create (host, CALPROG, CALVER1, "udp");
 	if (clnt == NULL) {
 		clnt_pcreateerror (host);
 		exit (1);
@@ -128,7 +126,7 @@ calprog_2(char *host)
 	operationMatrix calculator_2_arg1;
 
 #ifndef	DEBUG
-	clnt = clnt_create (host, CALPROG, CALVER, "udp");
+	clnt = clnt_create (host, CALPROG, CALVER2, "udp");
 	if (clnt == NULL) {
 		clnt_pcreateerror (host);
 		exit (1);

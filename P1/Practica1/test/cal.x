@@ -35,10 +35,10 @@
 
 
   program CALPROG {
-    version CALVER {
+    version CALVER1 {
       calculator_res CALCULATOR(operation) = 1;
     } = 1;
-    version CALVER {
+    version CALVER2 {
       calculator_res CALCULATOR(operationMatrix) = 1;
     } = 2;
   } = 0x20000155;

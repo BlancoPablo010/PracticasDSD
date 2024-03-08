@@ -115,20 +115,20 @@ main (int argc, char **argv)
 {
 	register SVCXPRT *transp;
 
-	pmap_unset (CALPROG, CALVER);
-	pmap_unset (CALPROG, CALVER);
+	pmap_unset (CALPROG, CALVER1);
+	pmap_unset (CALPROG, CALVER2);
 
 	transp = svcudp_create(RPC_ANYSOCK);
 	if (transp == NULL) {
 		fprintf (stderr, "%s", "cannot create udp service.");
 		exit(1);
 	}
-	if (!svc_register(transp, CALPROG, CALVER, calprog_1, IPPROTO_UDP)) {
-		fprintf (stderr, "%s", "unable to register (CALPROG, CALVER, udp).");
+	if (!svc_register(transp, CALPROG, CALVER1, calprog_1, IPPROTO_UDP)) {
+		fprintf (stderr, "%s", "unable to register (CALPROG, CALVER1, udp).");
 		exit(1);
 	}
-	if (!svc_register(transp, CALPROG, CALVER, calprog_2, IPPROTO_UDP)) {
-		fprintf (stderr, "%s", "unable to register (CALPROG, CALVER, udp).");
+	if (!svc_register(transp, CALPROG, CALVER2, calprog_2, IPPROTO_UDP)) {
+		fprintf (stderr, "%s", "unable to register (CALPROG, CALVER2, udp).");
 		exit(1);
 	}
 
@@ -137,12 +137,12 @@ main (int argc, char **argv)
 		fprintf (stderr, "%s", "cannot create tcp service.");
 		exit(1);
 	}
-	if (!svc_register(transp, CALPROG, CALVER, calprog_1, IPPROTO_TCP)) {
-		fprintf (stderr, "%s", "unable to register (CALPROG, CALVER, tcp).");
+	if (!svc_register(transp, CALPROG, CALVER1, calprog_1, IPPROTO_TCP)) {
+		fprintf (stderr, "%s", "unable to register (CALPROG, CALVER1, tcp).");
 		exit(1);
 	}
-	if (!svc_register(transp, CALPROG, CALVER, calprog_2, IPPROTO_TCP)) {
-		fprintf (stderr, "%s", "unable to register (CALPROG, CALVER, tcp).");
+	if (!svc_register(transp, CALPROG, CALVER2, calprog_2, IPPROTO_TCP)) {
+		fprintf (stderr, "%s", "unable to register (CALPROG, CALVER2, tcp).");
 		exit(1);
 	}
 

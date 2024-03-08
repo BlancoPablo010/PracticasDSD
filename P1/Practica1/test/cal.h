@@ -58,7 +58,7 @@ struct calculator_res {
 typedef struct calculator_res calculator_res;
 
 #define CALPROG 0x20000155
-#define CALVER 1
+#define CALVER1 1
 
 #if defined(__STDC__) || defined(__cplusplus)
 #define CALCULATOR 1
@@ -72,7 +72,7 @@ extern  calculator_res * calculator_1();
 extern  calculator_res * calculator_1_svc();
 extern int calprog_1_freeresult ();
 #endif /* K&R C */
-#define CALVER 2
+#define CALVER2 2
 
 #if defined(__STDC__) || defined(__cplusplus)
 extern  calculator_res * calculator_2(operationMatrix , CLIENT *);
