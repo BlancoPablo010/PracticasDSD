@@ -52,10 +52,17 @@ struct calculator_res {
 	int errnum;
 	union {
 		double res;
-		matrix resMatrix;
 	} calculator_res_u;
 };
 typedef struct calculator_res calculator_res;
+
+struct calculator_2_res {
+	int errnum;
+	union {
+		matrix res;
+	} calculator_2_res_u;
+};
+typedef struct calculator_2_res calculator_2_res;
 
 #define CALPROG 0x20000155
 #define CALVER1 1
@@ -75,13 +82,15 @@ extern int calprog_1_freeresult ();
 #define CALVER2 2
 
 #if defined(__STDC__) || defined(__cplusplus)
-extern  calculator_res * calculator_2(operationMatrix , CLIENT *);
-extern  calculator_res * calculator_2_svc(operationMatrix , struct svc_req *);
+#define CALCULATOR_MATRIX 1
+extern  calculator_2_res * calculator_matrix_2(operationMatrix , CLIENT *);
+extern  calculator_2_res * calculator_matrix_2_svc(operationMatrix , struct svc_req *);
 extern int calprog_2_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
-extern  calculator_res * calculator_2();
-extern  calculator_res * calculator_2_svc();
+#define CALCULATOR_MATRIX 1
+extern  calculator_2_res * calculator_matrix_2();
+extern  calculator_2_res * calculator_matrix_2_svc();
 extern int calprog_2_freeresult ();
 #endif /* K&R C */
 
@@ -96,6 +105,7 @@ extern  bool_t xdr_operationMatrix (XDR *, operationMatrix*);
 extern  bool_t xdr_Operation (XDR *, Operation*);
 extern  bool_t xdr_OperationMatrix (XDR *, OperationMatrix*);
 extern  bool_t xdr_calculator_res (XDR *, calculator_res*);
+extern  bool_t xdr_calculator_2_res (XDR *, calculator_2_res*);
 
 #else /* K&R C */
 extern bool_t xdr_vector_t ();
@@ -106,6 +116,7 @@ extern bool_t xdr_operationMatrix ();
 extern bool_t xdr_Operation ();
 extern bool_t xdr_OperationMatrix ();
 extern bool_t xdr_calculator_res ();
+extern bool_t xdr_calculator_2_res ();
 
 #endif /* K&R C */
 

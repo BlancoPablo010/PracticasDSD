@@ -24,15 +24,15 @@ calculator_1(operation arg1,  CLIENT *clnt)
 	return (&clnt_res);
 }
 
-calculator_res *
-calculator_2(operationMatrix arg1,  CLIENT *clnt)
+calculator_2_res *
+calculator_matrix_2(operationMatrix arg1,  CLIENT *clnt)
 {
-	static calculator_res clnt_res;
+	static calculator_2_res clnt_res;
 
 	memset((char *)&clnt_res, 0, sizeof(clnt_res));
-	if (clnt_call (clnt, CALCULATOR,
+	if (clnt_call (clnt, CALCULATOR_MATRIX,
 		(xdrproc_t) xdr_operationMatrix, (caddr_t) &arg1,
-		(xdrproc_t) xdr_calculator_res, (caddr_t) &clnt_res,
+		(xdrproc_t) xdr_calculator_2_res, (caddr_t) &clnt_res,
 		TIMEOUT) != RPC_SUCCESS) {
 		return (NULL);
 	}

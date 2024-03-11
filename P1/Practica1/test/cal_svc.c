@@ -22,10 +22,10 @@ _calculator_1 (operation  *argp, struct svc_req *rqstp)
 	return (calculator_1_svc(*argp, rqstp));
 }
 
-static calculator_res *
-_calculator_2 (operationMatrix  *argp, struct svc_req *rqstp)
+static calculator_2_res *
+_calculator_matrix_2 (operationMatrix  *argp, struct svc_req *rqstp)
 {
-	return (calculator_2_svc(*argp, rqstp));
+	return (calculator_matrix_2_svc(*argp, rqstp));
 }
 
 static void
@@ -73,7 +73,7 @@ static void
 calprog_2(struct svc_req *rqstp, register SVCXPRT *transp)
 {
 	union {
-		operationMatrix calculator_2_arg;
+		operationMatrix calculator_matrix_2_arg;
 	} argument;
 	char *result;
 	xdrproc_t _xdr_argument, _xdr_result;
@@ -84,10 +84,10 @@ calprog_2(struct svc_req *rqstp, register SVCXPRT *transp)
 		(void) svc_sendreply (transp, (xdrproc_t) xdr_void, (char *)NULL);
 		return;
 
-	case CALCULATOR:
+	case CALCULATOR_MATRIX:
 		_xdr_argument = (xdrproc_t) xdr_operationMatrix;
-		_xdr_result = (xdrproc_t) xdr_calculator_res;
-		local = (char *(*)(char *, struct svc_req *)) _calculator_2;
+		_xdr_result = (xdrproc_t) xdr_calculator_2_res;
+		local = (char *(*)(char *, struct svc_req *)) _calculator_matrix_2;
 		break;
 
 	default:

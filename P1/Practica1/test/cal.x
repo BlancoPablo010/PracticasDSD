@@ -27,10 +27,15 @@
   union calculator_res switch (int errnum) {
     case 0:
       double res; /* sin error: resultado de la operación */
-    case 1:
-      matrix resMatrix; /* sin error: resultado de la operación matricial */
     default:
       void;               /* con error: nada */
+  };
+
+  union calculator_2_res switch (int errnum) {
+    case 0:
+      matrix res;
+    default:
+      void;
   };
 
 
@@ -39,7 +44,6 @@
       calculator_res CALCULATOR(operation) = 1;
     } = 1;
     version CALVER2 {
-      calculator_res CALCULATOR(operationMatrix) = 1;
+      calculator_2_res CALCULATOR_MATRIX(operationMatrix) = 1;
     } = 2;
   } = 0x20000155;
-

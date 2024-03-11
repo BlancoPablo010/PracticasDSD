@@ -47,17 +47,65 @@ calculator_1_svc(operation arg1,  struct svc_req *rqstp)
     }
 	
 	return &result;
-
 }
 
-calculator_res *
+calculator_2_res *
 calculator_2_svc(operationMatrix arg1,  struct svc_req *rqstp)
 {
-	static calculator_res  result;
+	static calculator_2_res  result;
+	matrix *operationResultp;
 
-	/*
-	 * insert server code here
-	 */
+	xdr_free(xdr_calculator_res, &result);
+	
+	operationResultp = &result.calculator_2_res_u.res;
+
+	operationResultp->matrix_val = malloc(arg1.size);
+
+	for(int i=0; i<arg1.size; i++)
+		operationResultp->matrix_val[i].vector_t_val = malloc(arg1.size);
+
+	int i, j;
+    switch (arg1.operator[0]) {
+        case '+':
+            for (i = 0; i < arg1.size; i++) {
+                for (j = 0; j < arg1.size; j++) {
+                    operationResultp->matrix_val[i].vector_t_val[j] = arg1.firstMatrix.matrix_val[i].vector_t_val[j] + arg1.secondMatrix.matrix_val[i].vector_t_val[j];
+                }
+            }
+            break;
+        case '-':
+            for (i = 0; i < arg1.size; i++) {
+                for (j = 0; j < arg1.size; j++) {
+                    operationResultp->matrix_val[i].vector_t_val[j] = arg1.firstMatrix.matrix_val[i].vector_t_val[j] - arg1.secondMatrix.matrix_val[i].vector_t_val[j];
+                }
+            }
+            break;
+        case '*':
+            for (i = 0; i < arg1.size; i++) {
+                for (j = 0; j < arg1.size; j++) {
+                    operationResultp->matrix_val[i].vector_t_val[j] = arg1.firstMatrix.matrix_val[i].vector_t_val[j] * arg1.secondMatrix.matrix_val[i].vector_t_val[j];
+                }
+            }
+            break;
+
+        case 'x':
+            for (i = 0; i < arg1.size; i++) {
+                for (j = 0; j < arg1.size; j++) {
+                    operationResultp->matrix_val[i].vector_t_val[j] = arg1.firstMatrix.matrix_val[i].vector_t_val[j] * arg1.escalar;
+                }
+            }
+            break;
+        default:
+			result.errnum = 3;
+            return (&result);
+            break;
+    }
+
+
+	for(int i=0; i<arg1.size; i++)
+		free(arg1.firstMatrix.matrix_val[i].vector_t_val);
+
+	free(operationResultp->matrix_val);
 
 	return &result;
 }

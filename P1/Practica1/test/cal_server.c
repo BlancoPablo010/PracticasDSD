@@ -9,54 +9,77 @@
 calculator_res *
 calculator_1_svc(operation arg1,  struct svc_req *rqstp)
 {
-	static calculator_res result;
-
-	//double operationResult;
-
-	double *operationResultp;
-
-	xdr_free(xdr_calculator_res, &result);
-
-	operationResultp = &result.calculator_res_u.res;
-
-    // Realizar la operación y mostrar el resultado
-    switch (arg1.operator[0]) {
-        case '+':
-            *operationResultp = arg1.firstNumber + arg1.secondNumber;
-            break;
-        case '-':
-            *operationResultp = arg1.firstNumber - arg1.secondNumber;
-            break;
-        case '*':
-            *operationResultp = arg1.firstNumber * arg1.secondNumber;
-            break;
-        case '/':
-            if (arg1.secondNumber != 0) {
-                *operationResultp = arg1.firstNumber / arg1.secondNumber;
-            } else {
-                result.errnum = 2;
-				return(&result);
-
-            }
-            break;
-        default:
-
-            result.errnum = 3;
-			return(&result);
-            break;
-    }
-	
-	return &result;
-}
-
-calculator_res *
-calculator_2_svc(operationMatrix arg1,  struct svc_req *rqstp)
-{
 	static calculator_res  result;
 
 	/*
 	 * insert server code here
 	 */
 
+	return &result;
+}
+
+calculator_2_res *
+calculator_matrix_2_svc(operationMatrix arg1,  struct svc_req *rqstp)
+{
+	static calculator_2_res  result;
+
+	xdr_free(xdr_calculator_res, &result);
+
+	result.calculator_2_res_u.res.matrix_len = arg1.size;
+	result.calculator_2_res_u.res.matrix_val = malloc(arg1.size);
+
+	for(int i=0; i<arg1.size; i++) {
+		result.calculator_2_res_u.res.matrix_val[i].vector_t_len = arg1.size;
+		result.calculator_2_res_u.res.matrix_val[i].vector_t_val = malloc(arg1.size);
+	}
+
+
+
+
+	int i, j;
+    switch (arg1.operator[0]) {
+        case '+':
+            for (i = 0; i < arg1.size; i++) {
+                for (j = 0; j < arg1.size; j++) {
+                    result.calculator_2_res_u.res.matrix_val[i].vector_t_val[j] = arg1.firstMatrix.matrix_val[i].vector_t_val[j] + arg1.secondMatrix.matrix_val[i].vector_t_val[j];
+                }
+            }
+            break;
+        case '-':
+            for (i = 0; i < arg1.size; i++) {
+                for (j = 0; j < arg1.size; j++) {
+                    result.calculator_2_res_u.res.matrix_val[i].vector_t_val[j] = arg1.firstMatrix.matrix_val[i].vector_t_val[j] - arg1.secondMatrix.matrix_val[i].vector_t_val[j];
+                }
+            }
+            break;
+        case '*':
+            for (i = 0; i < arg1.size; i++) {
+                for (j = 0; j < arg1.size; j++) {
+                    result.calculator_2_res_u.res.matrix_val[i].vector_t_val[j] = arg1.firstMatrix.matrix_val[i].vector_t_val[j] * arg1.secondMatrix.matrix_val[i].vector_t_val[j];
+                }
+            }
+            break;
+
+        case 'x':
+            for (i = 0; i < arg1.size; i++) {
+                for (j = 0; j < arg1.size; j++) {
+                    result.calculator_2_res_u.res.matrix_val[i].vector_t_val[j] = arg1.firstMatrix.matrix_val[i].vector_t_val[j] * arg1.escalar;
+                }
+            }
+            break;
+        default:
+			result.errnum = 3;
+            return (&result);
+            break;
+    }
+
+	printf("Resultado: \n");
+
+	for(int i=0; i<arg1.size; i++) {
+		for(int j=0; j<arg1.size; j++) {
+			printf("%f ", result.calculator_2_res_u.res.matrix_val[i].vector_t_val[j]);
+		}
+		printf("\n");
+	}
 	return &result;
 }

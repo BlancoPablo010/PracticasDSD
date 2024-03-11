@@ -101,8 +101,22 @@ xdr_calculator_res (XDR *xdrs, calculator_res *objp)
 		 if (!xdr_double (xdrs, &objp->calculator_res_u.res))
 			 return FALSE;
 		break;
-	case 1:
-		 if (!xdr_matrix (xdrs, &objp->calculator_res_u.resMatrix))
+	default:
+		break;
+	}
+	return TRUE;
+}
+
+bool_t
+xdr_calculator_2_res (XDR *xdrs, calculator_2_res *objp)
+{
+	register int32_t *buf;
+
+	 if (!xdr_int (xdrs, &objp->errnum))
+		 return FALSE;
+	switch (objp->errnum) {
+	case 0:
+		 if (!xdr_matrix (xdrs, &objp->calculator_2_res_u.res))
 			 return FALSE;
 		break;
 	default:
