@@ -266,6 +266,57 @@ calprog_2(char *host)
 }
 
 
+void
+calprog_3(char *host)
+{
+	CLIENT *clnt;
+	calculator_3_res  *result_1;
+	operationDet calculator_matrix_det_3_arg1;
+
+	printf("Ingrese el tamaño de la matriz(máx. 4): ");
+	scanf("%d", &calculator_matrix_det_3_arg1.size);
+
+	calculator_matrix_det_3_arg1.detMatrix.matrix_len = calculator_matrix_det_3_arg1.size;
+	calculator_matrix_det_3_arg1.detMatrix.matrix_val = malloc(calculator_matrix_det_3_arg1.size);
+
+	for(int i=0; i<calculator_matrix_det_3_arg1.size; i++) {
+		calculator_matrix_det_3_arg1.detMatrix.matrix_val[i].vector_t_len = calculator_matrix_det_3_arg1.size;
+		calculator_matrix_det_3_arg1.detMatrix.matrix_val[i].vector_t_val = malloc(calculator_matrix_det_3_arg1.size);
+	}
+
+	printf("Ingrese los valores de la matriz: \n");
+	for (int i = 0; i < calculator_matrix_det_3_arg1.size; i++) {
+		for (int j = 0; j < calculator_matrix_det_3_arg1.size; j++) {
+			printf("Ingrese el valor de la posición (%d, %d): ", i, j);
+			scanf("%lf", &calculator_matrix_det_3_arg1.detMatrix.matrix_val[i].vector_t_val[j]);
+		}
+	}
+
+#ifndef	DEBUG
+	clnt = clnt_create (host, CALPROG, CALVER3, "udp");
+	if (clnt == NULL) {
+		clnt_pcreateerror (host);
+		exit (1);
+	}
+#endif	/* DEBUG */
+
+	result_1 = calculator_matrix_det_3(calculator_matrix_det_3_arg1, clnt);
+	if (result_1 == (calculator_3_res *) NULL) {
+		clnt_perror (clnt, "call failed");
+	}
+
+	printf("Determinante de la matriz: %f", result_1->calculator_3_res_u.res);
+
+	xdr_free(xdr_calculator_3_res, result_1);
+	for(int i=0; i<calculator_matrix_det_3_arg1.size; i++)
+		free(calculator_matrix_det_3_arg1.detMatrix.matrix_val[i].vector_t_val);
+	free(calculator_matrix_det_3_arg1.detMatrix.matrix_val);
+#ifndef	DEBUG
+	clnt_destroy (clnt);
+#endif	 /* DEBUG */
+}
+
+
 int
 main (int argc, char *argv[])
 {
@@ -288,7 +339,24 @@ main (int argc, char *argv[])
 				calprog_1 (host);
 				break;
 			case 2:
-				calprog_2 (host);
+				printf("Operación de matrices:\nSelecciones una opción:\n1. Operaciones entre matrices.\n2. Determinante de una matriz.\n3. Salir.\n");
+				scanf("%d", &opcion);
+				while(opcion != 3) {
+					switch(opcion) {
+						case 1:
+							calprog_2 (host);
+							break;
+						case 2:
+							calprog_3 (host);
+							break;
+						case 3:
+							break;
+						default:
+							printf("Opción invalida\n");
+							break;
+					}
+				}
+				opcion = 2;
 				break;
 			case 3:
 				break;

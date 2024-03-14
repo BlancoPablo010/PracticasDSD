@@ -92,7 +92,7 @@ int operar2(struct OperacionMatricial *operacion) {
 
 int main() {
 
-
+    int cadena[20]={};
 
     struct Operacion operacion;
 

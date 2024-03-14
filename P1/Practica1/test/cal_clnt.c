@@ -38,3 +38,18 @@ calculator_matrix_2(operationMatrix arg1,  CLIENT *clnt)
 	}
 	return (&clnt_res);
 }
+
+calculator_3_res *
+calculator_matrix_det_3(operationDet arg1,  CLIENT *clnt)
+{
+	static calculator_3_res clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, CALCULATOR_MATRIX_DET,
+		(xdrproc_t) xdr_operationDet, (caddr_t) &arg1,
+		(xdrproc_t) xdr_calculator_3_res, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}

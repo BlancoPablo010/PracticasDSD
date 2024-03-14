@@ -58,6 +58,16 @@ xdr_operationMatrix (XDR *xdrs, operationMatrix *objp)
 }
 
 bool_t
+xdr_operationDet (XDR *xdrs, operationDet *objp)
+{
+	register int32_t *buf;
+
+	 if (!xdr_OperationDet (xdrs, objp))
+		 return FALSE;
+	return TRUE;
+}
+
+bool_t
 xdr_Operation (XDR *xdrs, Operation *objp)
 {
 	register int32_t *buf;
@@ -90,6 +100,18 @@ xdr_OperationMatrix (XDR *xdrs, OperationMatrix *objp)
 }
 
 bool_t
+xdr_OperationDet (XDR *xdrs, OperationDet *objp)
+{
+	register int32_t *buf;
+
+	 if (!xdr_int (xdrs, &objp->size))
+		 return FALSE;
+	 if (!xdr_matrix (xdrs, &objp->detMatrix))
+		 return FALSE;
+	return TRUE;
+}
+
+bool_t
 xdr_calculator_res (XDR *xdrs, calculator_res *objp)
 {
 	register int32_t *buf;
@@ -117,6 +139,24 @@ xdr_calculator_2_res (XDR *xdrs, calculator_2_res *objp)
 	switch (objp->errnum) {
 	case 0:
 		 if (!xdr_matrix (xdrs, &objp->calculator_2_res_u.res))
+			 return FALSE;
+		break;
+	default:
+		break;
+	}
+	return TRUE;
+}
+
+bool_t
+xdr_calculator_3_res (XDR *xdrs, calculator_3_res *objp)
+{
+	register int32_t *buf;
+
+	 if (!xdr_int (xdrs, &objp->errnum))
+		 return FALSE;
+	switch (objp->errnum) {
+	case 0:
+		 if (!xdr_double (xdrs, &objp->calculator_3_res_u.res))
 			 return FALSE;
 		break;
 	default:

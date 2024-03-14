@@ -6,6 +6,7 @@
   typedef string operatorType<MAX>;                               /* entrada del operador */  
   typedef struct Operation operation;                /* estructura de la operación basica */
   typedef struct OperationMatrix operationMatrix; /* estructura de la operación matricial */
+  typedef struct OperationDet operationDet;   /* estructura de la operación para calcular determinantes */
 
   struct Operation{
     double firstNumber;                 /* primer double de la operación */
@@ -19,6 +20,11 @@
     operatorType operator;
     matrix secondMatrix;
     double escalar;
+  };
+
+  struct OperationDet{
+    int size;
+    matrix detMatrix;
   };
 
 
@@ -38,6 +44,12 @@
       void;
   };
 
+  union calculator_3_res switch (int errnum) {
+    case 0:
+      double res;
+    default:
+      void;
+  };
 
   program CALPROG {
     version CALVER1 {
@@ -46,4 +58,7 @@
     version CALVER2 {
       calculator_2_res CALCULATOR_MATRIX(operationMatrix) = 1;
     } = 2;
+    version CALVER3 {
+      calculator_3_res CALCULATOR_MATRIX_DET(operationDet) = 1;
+    } = 3;
   } = 0x20000155;
