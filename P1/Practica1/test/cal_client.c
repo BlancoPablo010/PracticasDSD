@@ -143,21 +143,18 @@ calprog_2(char *host)
 	} while(calculator_matrix_2_arg1.size >= 10 || calculator_matrix_2_arg1.size < 0);
 
 /*Asignar memoria a las matrices*/
+
 	calculator_matrix_2_arg1.firstMatrix.matrix_len = calculator_matrix_2_arg1.size;
 	calculator_matrix_2_arg1.firstMatrix.matrix_val = malloc(calculator_matrix_2_arg1.size);
+	calculator_matrix_2_arg1.secondMatrix.matrix_len = calculator_matrix_2_arg1.size;
+	calculator_matrix_2_arg1.secondMatrix.matrix_val = malloc(calculator_matrix_2_arg1.size);
+	
 
 	for(int i=0; i<calculator_matrix_2_arg1.size; i++) {
 		calculator_matrix_2_arg1.firstMatrix.matrix_val[i].vector_t_len = calculator_matrix_2_arg1.size;
 		calculator_matrix_2_arg1.firstMatrix.matrix_val[i].vector_t_val = malloc(calculator_matrix_2_arg1.size);
-	}
-
-	calculator_matrix_2_arg1.secondMatrix.matrix_len = calculator_matrix_2_arg1.size;
-	calculator_matrix_2_arg1.secondMatrix.matrix_val = malloc(calculator_matrix_2_arg1.size);
-
-	for(int i=0; i<calculator_matrix_2_arg1.size; i++) {
 		calculator_matrix_2_arg1.secondMatrix.matrix_val[i].vector_t_len = calculator_matrix_2_arg1.size;
 		calculator_matrix_2_arg1.secondMatrix.matrix_val[i].vector_t_val = malloc(calculator_matrix_2_arg1.size);
-
 	}
 
 	printf("Ingrese la operacion matricial (+, -, *, x[operacion escalar]): ");
@@ -247,17 +244,17 @@ calprog_2(char *host)
 
 	
 
-	xdr_free(xdr_calculator_res, result_1);
 
 /*Liberar memoria del operador y de matrices*/
+	xdr_free(xdr_calculator_res, result_1);
+
 	free(calculator_matrix_2_arg1.operator);
 	
-	for(int i=0; i<calculator_matrix_2_arg1.size; i++)
+	for(int i=0; i<calculator_matrix_2_arg1.size; i++) {
 		free(calculator_matrix_2_arg1.firstMatrix.matrix_val[i].vector_t_val);
-	free(calculator_matrix_2_arg1.firstMatrix.matrix_val);
-
-	for(int i=0; i<calculator_matrix_2_arg1.size; i++)
 		free(calculator_matrix_2_arg1.secondMatrix.matrix_val[i].vector_t_val);
+	}
+	free(calculator_matrix_2_arg1.firstMatrix.matrix_val);
 	free(calculator_matrix_2_arg1.secondMatrix.matrix_val);
 
 #ifndef	DEBUG
@@ -287,11 +284,18 @@ calprog_3(char *host)
 	printf("Ingrese los valores de la matriz: \n");
 	for (int i = 0; i < calculator_matrix_det_3_arg1.size; i++) {
 		for (int j = 0; j < calculator_matrix_det_3_arg1.size; j++) {
-			printf("Ingrese el valor de la posición (%d, %d): ", i, j);
 			scanf("%lf", &calculator_matrix_det_3_arg1.detMatrix.matrix_val[i].vector_t_val[j]);
 		}
 	}
 
+	printf("Matriz de tamaño %d: \n", calculator_matrix_det_3_arg1.size);
+	for(int i=0; i<calculator_matrix_det_3_arg1.size; i++) {
+		for(int j=0; j<calculator_matrix_det_3_arg1.size; j++) {
+			printf("%lf ", calculator_matrix_det_3_arg1.detMatrix.matrix_val[i].vector_t_val[j]);
+		}
+		printf("\n");
+	}
+	printf("Llega");
 #ifndef	DEBUG
 	clnt = clnt_create (host, CALPROG, CALVER3, "udp");
 	if (clnt == NULL) {
@@ -299,7 +303,7 @@ calprog_3(char *host)
 		exit (1);
 	}
 #endif	/* DEBUG */
-
+	
 	result_1 = calculator_matrix_det_3(calculator_matrix_det_3_arg1, clnt);
 	if (result_1 == (calculator_3_res *) NULL) {
 		clnt_perror (clnt, "call failed");
@@ -307,10 +311,12 @@ calprog_3(char *host)
 
 	printf("Determinante de la matriz: %f", result_1->calculator_3_res_u.res);
 
+
 	xdr_free(xdr_calculator_3_res, result_1);
 	for(int i=0; i<calculator_matrix_det_3_arg1.size; i++)
 		free(calculator_matrix_det_3_arg1.detMatrix.matrix_val[i].vector_t_val);
 	free(calculator_matrix_det_3_arg1.detMatrix.matrix_val);
+	
 #ifndef	DEBUG
 	clnt_destroy (clnt);
 #endif	 /* DEBUG */
