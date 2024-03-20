@@ -276,6 +276,10 @@ calprog_3(char *host)
 	calculator_3_res  *result_1;
 	operationVector calculator_vector_3_arg1;
 
+
+
+
+
 #ifndef	DEBUG
 	clnt = clnt_create (host, CALPROG, CALVER3, "udp");
 	if (clnt == NULL) {
@@ -284,10 +288,59 @@ calprog_3(char *host)
 	}
 #endif	/* DEBUG */
 
+	printf("Introduzca el tamaño de los vectores: \n");
+	scanf("%d", &calculator_vector_3_arg1.size);
+	calculator_vector_3_arg1.firstVector.vector_t_len = calculator_vector_3_arg1.size;
+	calculator_vector_3_arg1.secondVector.vector_t_len = calculator_vector_3_arg1.size;
+	
+	calculator_vector_3_arg1.firstVector.vector_t_val = (double *)malloc(calculator_vector_3_arg1.size * sizeof(double));
+	calculator_vector_3_arg1.secondVector.vector_t_val = (double *)malloc(calculator_vector_3_arg1.size * sizeof(double));
+
+	
+	calculator_vector_3_arg1.operator = malloc(1);
+	do {
+		printf("Introduzca el valor de la operación vectorial(+, -, *[producto escalar], x[producto vectorial, máx. tamaño 3]): \n");
+		scanf("%s", calculator_vector_3_arg1.operator);
+	} while(calculator_vector_3_arg1.operator[0] != '+' && calculator_vector_3_arg1.operator[0] != '-' && calculator_vector_3_arg1.operator[0] != '*' && calculator_vector_3_arg1.operator[0] != 'x');
+
+	calculator_vector_3_arg1.escalar = 1;
+
+	printf("Introduzca los valores del primer vector:\n");
+	for(int i=0; i<calculator_vector_3_arg1.size; i++) {
+		printf("Introduzca el valor de la posición %d: ", i);
+		scanf("%lf", &calculator_vector_3_arg1.firstVector.vector_t_val[i]);
+	}
+
+	printf("Introduzca los valores del segundo vector:\n");
+	for(int i=0; i<calculator_vector_3_arg1.size; i++) {
+		printf("Introduzca el valor de la posición %d: ", i);
+		scanf("%lf", &calculator_vector_3_arg1.secondVector.vector_t_val[i]);
+	}
+
+	
 	result_1 = calculator_vector_3(calculator_vector_3_arg1, clnt);
 	if (result_1 == (calculator_3_res *) NULL) {
 		clnt_perror (clnt, "call failed");
 	}
+
+	if(result_1->errnum == 2) {
+		printf("Error: Producto vectorial máximo de 3 dimensiones\n");
+	}
+	else if(result_1->errnum == 3) {
+		printf("Error: Operador invalido\n");
+	
+	}
+
+	printf("Resultado: \n[");
+	for(int i=0; i<result_1->calculator_3_res_u.res.vector_t_len; i++) {
+		printf("%f ", result_1->calculator_3_res_u.res.vector_t_val[i]);
+	}
+	printf("]\n");
+
+	xdr_free(xdr_calculator_3_res, result_1);
+	free(calculator_vector_3_arg1.operator);
+	free(calculator_vector_3_arg1.firstVector.vector_t_val);
+	free(calculator_vector_3_arg1.secondVector.vector_t_val);
 #ifndef	DEBUG
 	clnt_destroy (clnt);
 #endif	 /* DEBUG */
@@ -321,7 +374,6 @@ main (int argc, char *argv[])
 			case 3:
 				calprog_3 (host);
 				break;
-			
 			case 4:
 				break;
 			default:
