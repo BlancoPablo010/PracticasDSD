@@ -88,8 +88,8 @@ typedef struct calculator_3_res calculator_3_res;
 
 #if defined(__STDC__) || defined(__cplusplus)
 #define CALCULATOR 1
-extern  calculator_res * calculator_1(operation *, CLIENT *);
-extern  calculator_res * calculator_1_svc(operation *, struct svc_req *);
+extern  calculator_res * calculator_1(operation , CLIENT *);
+extern  calculator_res * calculator_1_svc(operation , struct svc_req *);
 extern int calprog_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
@@ -102,8 +102,8 @@ extern int calprog_1_freeresult ();
 
 #if defined(__STDC__) || defined(__cplusplus)
 #define CALCULATOR_MATRIX 1
-extern  calculator_2_res * calculator_matrix_2(operationMatrix *, CLIENT *);
-extern  calculator_2_res * calculator_matrix_2_svc(operationMatrix *, struct svc_req *);
+extern  calculator_2_res * calculator_matrix_2(operationMatrix , CLIENT *);
+extern  calculator_2_res * calculator_matrix_2_svc(operationMatrix , struct svc_req *);
 extern int calprog_2_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
@@ -116,8 +116,8 @@ extern int calprog_2_freeresult ();
 
 #if defined(__STDC__) || defined(__cplusplus)
 #define CALCULATOR_VECTOR 1
-extern  calculator_3_res * calculator_vector_3(operationVector *, CLIENT *);
-extern  calculator_3_res * calculator_vector_3_svc(operationVector *, struct svc_req *);
+extern  calculator_3_res * calculator_vector_3(operationVector , CLIENT *);
+extern  calculator_3_res * calculator_vector_3_svc(operationVector , struct svc_req *);
 extern int calprog_3_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */

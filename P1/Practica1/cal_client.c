@@ -331,9 +331,9 @@ main (int argc, char *argv[])
 	}
 	host = argv[1];
 
-	while(opcion != 3) {
+	while(opcion != 4) {
 
-		printf("Calculadora:\nSeleccione una opción:\n1. Operación de flotantes.\n2. Operación de vectores.\n3. Operación de matrices.\n4. Salir.\n"); 
+		printf("Calculadora:\nSeleccione una opción:\n1. Operación de flotantes.\n2. Operación de matrices.\n3. Operación de vectores.\n4. Salir.\n"); 
 		scanf("%d", &opcion);
 
 		switch(opcion) {
@@ -341,29 +341,10 @@ main (int argc, char *argv[])
 				calprog_1 (host);
 				break;
 			case 2:
-				printf("Operación de matrices:\nSelecciones una opción:\n1. Operaciones entre matrices.\n2. Determinante de una matriz.\n3. Salir.\n");
-				scanf("%d", &opcion);
-				while(opcion != 3) {
-					switch(opcion) {
-						case 1:
-							calprog_2 (host);
-							opcion = 3;
-							break;
-						case 2:
-							calprog_3 (host);
-							opcion = 3;
-							break;
-						case 3:
-							break;
-						default:
-							printf("Opción invalida\n");
-							break;
-					}
-				}
-				opcion = 2;
+				calprog_2 (host);
 				break;
 			case 3:
-				
+				calprog_3 (host);
 				break;
 			
 			case 4:
