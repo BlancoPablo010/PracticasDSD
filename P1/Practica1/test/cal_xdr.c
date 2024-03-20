@@ -58,11 +58,11 @@ xdr_operationMatrix (XDR *xdrs, operationMatrix *objp)
 }
 
 bool_t
-xdr_operationDet (XDR *xdrs, operationDet *objp)
+xdr_operationVector (XDR *xdrs, operationVector *objp)
 {
 	register int32_t *buf;
 
-	 if (!xdr_OperationDet (xdrs, objp))
+	 if (!xdr_OperationVector (xdrs, objp))
 		 return FALSE;
 	return TRUE;
 }
@@ -100,13 +100,19 @@ xdr_OperationMatrix (XDR *xdrs, OperationMatrix *objp)
 }
 
 bool_t
-xdr_OperationDet (XDR *xdrs, OperationDet *objp)
+xdr_OperationVector (XDR *xdrs, OperationVector *objp)
 {
 	register int32_t *buf;
 
 	 if (!xdr_int (xdrs, &objp->size))
 		 return FALSE;
-	 if (!xdr_matrix (xdrs, &objp->detMatrix))
+	 if (!xdr_vector_t (xdrs, &objp->firstVector))
+		 return FALSE;
+	 if (!xdr_operatorType (xdrs, &objp->operator))
+		 return FALSE;
+	 if (!xdr_vector_t (xdrs, &objp->secondVector))
+		 return FALSE;
+	 if (!xdr_double (xdrs, &objp->escalar))
 		 return FALSE;
 	return TRUE;
 }
@@ -156,7 +162,7 @@ xdr_calculator_3_res (XDR *xdrs, calculator_3_res *objp)
 		 return FALSE;
 	switch (objp->errnum) {
 	case 0:
-		 if (!xdr_double (xdrs, &objp->calculator_3_res_u.res))
+		 if (!xdr_vector_t (xdrs, &objp->calculator_3_res_u.res))
 			 return FALSE;
 		break;
 	default:

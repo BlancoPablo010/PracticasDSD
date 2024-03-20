@@ -16,24 +16,6 @@
 #define SIG_PF void(*)(int)
 #endif
 
-static calculator_res *
-_calculator_1 (operation  *argp, struct svc_req *rqstp)
-{
-	return (calculator_1_svc(*argp, rqstp));
-}
-
-static calculator_2_res *
-_calculator_matrix_2 (operationMatrix  *argp, struct svc_req *rqstp)
-{
-	return (calculator_matrix_2_svc(*argp, rqstp));
-}
-
-static calculator_3_res *
-_calculator_matrix_det_3 (operationDet  *argp, struct svc_req *rqstp)
-{
-	return (calculator_matrix_det_3_svc(*argp, rqstp));
-}
-
 static void
 calprog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 {
@@ -52,7 +34,7 @@ calprog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 	case CALCULATOR:
 		_xdr_argument = (xdrproc_t) xdr_operation;
 		_xdr_result = (xdrproc_t) xdr_calculator_res;
-		local = (char *(*)(char *, struct svc_req *)) _calculator_1;
+		local = (char *(*)(char *, struct svc_req *)) calculator_1_svc;
 		break;
 
 	default:
@@ -93,7 +75,7 @@ calprog_2(struct svc_req *rqstp, register SVCXPRT *transp)
 	case CALCULATOR_MATRIX:
 		_xdr_argument = (xdrproc_t) xdr_operationMatrix;
 		_xdr_result = (xdrproc_t) xdr_calculator_2_res;
-		local = (char *(*)(char *, struct svc_req *)) _calculator_matrix_2;
+		local = (char *(*)(char *, struct svc_req *)) calculator_matrix_2_svc;
 		break;
 
 	default:
@@ -120,7 +102,7 @@ static void
 calprog_3(struct svc_req *rqstp, register SVCXPRT *transp)
 {
 	union {
-		operationDet calculator_matrix_det_3_arg;
+		operationVector calculator_vector_3_arg;
 	} argument;
 	char *result;
 	xdrproc_t _xdr_argument, _xdr_result;
@@ -131,10 +113,10 @@ calprog_3(struct svc_req *rqstp, register SVCXPRT *transp)
 		(void) svc_sendreply (transp, (xdrproc_t) xdr_void, (char *)NULL);
 		return;
 
-	case CALCULATOR_MATRIX_DET:
-		_xdr_argument = (xdrproc_t) xdr_operationDet;
+	case CALCULATOR_VECTOR:
+		_xdr_argument = (xdrproc_t) xdr_operationVector;
 		_xdr_result = (xdrproc_t) xdr_calculator_3_res;
-		local = (char *(*)(char *, struct svc_req *)) _calculator_matrix_det_3;
+		local = (char *(*)(char *, struct svc_req *)) calculator_vector_3_svc;
 		break;
 
 	default:

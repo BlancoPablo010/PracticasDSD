@@ -49,7 +49,7 @@ calprog_1(char *host)
 	} else if(result_1->errnum == 3) {
 		printf("Error: Operador invalido\n");
 	} else {
-		printf("Resultado: %f\n", result_1->calculator_res_u.res);
+		printf("\nResultado: %f\n\n", result_1->calculator_res_u.res);
 	
 	}
 
@@ -99,7 +99,7 @@ calprog_1(char *host)
 		} else if(result_1->errnum == 3) {
 			printf("Error: Operador invalido\n");
 		} else {
-			printf("Resultado: %f\n", result_1->calculator_res_u.res);
+			printf("\nResultado: %f\n\n", result_1->calculator_res_u.res);
 		
 		}
 
@@ -143,22 +143,21 @@ calprog_2(char *host)
 	} while(calculator_matrix_2_arg1.size >= 10 || calculator_matrix_2_arg1.size < 0);
 
 /*Asignar memoria a las matrices*/
+
 	calculator_matrix_2_arg1.firstMatrix.matrix_len = calculator_matrix_2_arg1.size;
-	calculator_matrix_2_arg1.firstMatrix.matrix_val = malloc(calculator_matrix_2_arg1.size);
+	calculator_matrix_2_arg1.firstMatrix.matrix_val = (vector_t *)malloc(calculator_matrix_2_arg1.size * sizeof(vector_t));
+	calculator_matrix_2_arg1.secondMatrix.matrix_len = calculator_matrix_2_arg1.size;
+	calculator_matrix_2_arg1.secondMatrix.matrix_val = (vector_t *)malloc(calculator_matrix_2_arg1.size * sizeof(vector_t));
+	
 
 	for(int i=0; i<calculator_matrix_2_arg1.size; i++) {
 		calculator_matrix_2_arg1.firstMatrix.matrix_val[i].vector_t_len = calculator_matrix_2_arg1.size;
-		calculator_matrix_2_arg1.firstMatrix.matrix_val[i].vector_t_val = malloc(calculator_matrix_2_arg1.size);
-	}
-
-	calculator_matrix_2_arg1.secondMatrix.matrix_len = calculator_matrix_2_arg1.size;
-	calculator_matrix_2_arg1.secondMatrix.matrix_val = malloc(calculator_matrix_2_arg1.size);
-
-	for(int i=0; i<calculator_matrix_2_arg1.size; i++) {
+		calculator_matrix_2_arg1.firstMatrix.matrix_val[i].vector_t_val = (double *)malloc(calculator_matrix_2_arg1.size * sizeof(double));
 		calculator_matrix_2_arg1.secondMatrix.matrix_val[i].vector_t_len = calculator_matrix_2_arg1.size;
-		calculator_matrix_2_arg1.secondMatrix.matrix_val[i].vector_t_val = malloc(calculator_matrix_2_arg1.size);
-
+		calculator_matrix_2_arg1.secondMatrix.matrix_val[i].vector_t_val = (double *)malloc(calculator_matrix_2_arg1.size * sizeof(double));
 	}
+
+	calculator_matrix_2_arg1.escalar = 1;
 
 	printf("Ingrese la operacion matricial (+, -, *, x[operacion escalar]): ");
 	scanf("%s", calculator_matrix_2_arg1.operator);
@@ -187,7 +186,6 @@ calprog_2(char *host)
 
 	}
 	else {
-		calculator_matrix_2_arg1.escalar = 1;
 		printf("Ingrese los valores de la primera matriz: \n");
 		for (int i = 0; i < calculator_matrix_2_arg1.size; i++) {
 			for (int j = 0; j < calculator_matrix_2_arg1.size; j++) {
@@ -237,34 +235,34 @@ calprog_2(char *host)
 	}
 
 
-	printf("Resultado: \n");
+	printf("\nResultado: \n");
 	for (int i = 0; i < calculator_matrix_2_arg1.size; i++) {
 		for (int j = 0; j < calculator_matrix_2_arg1.size; j++) {
 			printf("%f ", result_1->calculator_2_res_u.res.matrix_val[i].vector_t_val[j]);
 		}
 		printf("\n");
 	}
+	printf("\n");
 
 	
 
-	xdr_free(xdr_calculator_res, result_1);
 
 /*Liberar memoria del operador y de matrices*/
+	xdr_free(xdr_calculator_res, result_1);
+
 	free(calculator_matrix_2_arg1.operator);
 	
-	for(int i=0; i<calculator_matrix_2_arg1.size; i++)
+	for(int i=0; i<calculator_matrix_2_arg1.size; i++) {
 		free(calculator_matrix_2_arg1.firstMatrix.matrix_val[i].vector_t_val);
-	free(calculator_matrix_2_arg1.firstMatrix.matrix_val);
-
-	for(int i=0; i<calculator_matrix_2_arg1.size; i++)
 		free(calculator_matrix_2_arg1.secondMatrix.matrix_val[i].vector_t_val);
+	}
+	free(calculator_matrix_2_arg1.firstMatrix.matrix_val);
 	free(calculator_matrix_2_arg1.secondMatrix.matrix_val);
 
 #ifndef	DEBUG
 	clnt_destroy (clnt);
 #endif	 /* DEBUG */
 }
-
 
 
 void
@@ -274,15 +272,16 @@ calprog_3(char *host)
 	calculator_3_res  *result_1;
 	operationDet calculator_matrix_det_3_arg1;
 
+	printf("Ingrese el tamaño de la matriz(máx. 4): ");
+	scanf("%d", &calculator_matrix_det_3_arg1.size);
+
 	calculator_matrix_det_3_arg1.detMatrix.matrix_len = calculator_matrix_det_3_arg1.size;
-	calculator_matrix_det_3_arg1.detMatrix.matrix_val = malloc(calculator_matrix_det_3_arg1.size);
+	calculator_matrix_det_3_arg1.detMatrix.matrix_val = (vector_t *)malloc(calculator_matrix_det_3_arg1.size * sizeof(vector_t));
 
 	for(int i=0; i<calculator_matrix_det_3_arg1.size; i++) {
 		calculator_matrix_det_3_arg1.detMatrix.matrix_val[i].vector_t_len = calculator_matrix_det_3_arg1.size;
-		calculator_matrix_det_3_arg1.detMatrix.matrix_val[i].vector_t_val = malloc(calculator_matrix_det_3_arg1.size);
+		calculator_matrix_det_3_arg1.detMatrix.matrix_val[i].vector_t_val = (double *)malloc(calculator_matrix_det_3_arg1.size * sizeof(double));
 	}
-	printf("Ingrese el tamaño de la matriz(máx. 4): ");
-	scanf("%d", &calculator_matrix_det_3_arg1.size);
 
 	printf("Ingrese los valores de la matriz: \n");
 	for (int i = 0; i < calculator_matrix_det_3_arg1.size; i++) {
@@ -293,7 +292,6 @@ calprog_3(char *host)
 	}
 
 
-
 #ifndef	DEBUG
 	clnt = clnt_create (host, CALPROG, CALVER3, "udp");
 	if (clnt == NULL) {
@@ -301,7 +299,7 @@ calprog_3(char *host)
 		exit (1);
 	}
 #endif	/* DEBUG */
-
+	
 	result_1 = calculator_matrix_det_3(calculator_matrix_det_3_arg1, clnt);
 	if (result_1 == (calculator_3_res *) NULL) {
 		clnt_perror (clnt, "call failed");
@@ -309,6 +307,12 @@ calprog_3(char *host)
 
 	printf("Determinante de la matriz: %f", result_1->calculator_3_res_u.res);
 
+
+	xdr_free(xdr_calculator_3_res, result_1);
+	for(int i=0; i<calculator_matrix_det_3_arg1.size; i++)
+		free(calculator_matrix_det_3_arg1.detMatrix.matrix_val[i].vector_t_val);
+	free(calculator_matrix_det_3_arg1.detMatrix.matrix_val);
+	
 #ifndef	DEBUG
 	clnt_destroy (clnt);
 #endif	 /* DEBUG */
@@ -329,7 +333,7 @@ main (int argc, char *argv[])
 
 	while(opcion != 3) {
 
-		printf("Calculadora:\nSeleccione una opción:\n1. Operación de flotantes.\n2. Operación de matrices.\n3. Salir.\n"); 
+		printf("Calculadora:\nSeleccione una opción:\n1. Operación de flotantes.\n2. Operación de vectores.\n3. Operación de matrices.\n4. Salir.\n"); 
 		scanf("%d", &opcion);
 
 		switch(opcion) {
@@ -343,9 +347,11 @@ main (int argc, char *argv[])
 					switch(opcion) {
 						case 1:
 							calprog_2 (host);
+							opcion = 3;
 							break;
 						case 2:
 							calprog_3 (host);
+							opcion = 3;
 							break;
 						case 3:
 							break;
@@ -357,6 +363,10 @@ main (int argc, char *argv[])
 				opcion = 2;
 				break;
 			case 3:
+				
+				break;
+			
+			case 4:
 				break;
 			default:
 				printf("Opción invalida\n");
