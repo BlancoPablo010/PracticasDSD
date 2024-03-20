@@ -73,7 +73,9 @@ calculator_matrix_2_svc(operationMatrix arg1,  struct svc_req *rqstp)
         case '*':
             for (i = 0; i < arg1.size; i++) {
                 for (j = 0; j < arg1.size; j++) {
-                    result.calculator_2_res_u.res.matrix_val[i].vector_t_val[j] = arg1.firstMatrix.matrix_val[i].vector_t_val[j] * arg1.secondMatrix.matrix_val[i].vector_t_val[j];
+					for (int k = 0; k < arg1.size; k++) {
+						result.calculator_2_res_u.res.matrix_val[i].vector_t_val[j] += arg1.firstMatrix.matrix_val[i].vector_t_val[k] * arg1.secondMatrix.matrix_val[k].vector_t_val[j];
+					}
                 }
             }
             break;

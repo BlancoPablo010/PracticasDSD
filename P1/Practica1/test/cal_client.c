@@ -298,6 +298,13 @@ calprog_3(char *host)
 
 	
 	calculator_vector_3_arg1.operator = malloc(1);
+
+	printf("Introduzca los valores del primer vector:\n");
+	for(int i=0; i<calculator_vector_3_arg1.size; i++) {
+		printf("Introduzca el valor de la posición %d: ", i);
+		scanf("%lf", &calculator_vector_3_arg1.firstVector.vector_t_val[i]);
+	}
+
 	do {
 		printf("Introduzca el valor de la operación vectorial(+, -, *[producto escalar], x[producto vectorial, máx. tamaño 3]): \n");
 		scanf("%s", calculator_vector_3_arg1.operator);
@@ -305,11 +312,6 @@ calprog_3(char *host)
 
 	calculator_vector_3_arg1.escalar = 1;
 
-	printf("Introduzca los valores del primer vector:\n");
-	for(int i=0; i<calculator_vector_3_arg1.size; i++) {
-		printf("Introduzca el valor de la posición %d: ", i);
-		scanf("%lf", &calculator_vector_3_arg1.firstVector.vector_t_val[i]);
-	}
 
 	printf("Introduzca los valores del segundo vector:\n");
 	for(int i=0; i<calculator_vector_3_arg1.size; i++) {
@@ -331,11 +333,21 @@ calprog_3(char *host)
 	
 	}
 
-	printf("Resultado: \n[");
+	printf("\n[ ");
+
+	for(int i=0; i<calculator_vector_3_arg1.size; i++) {
+		printf("%f ", calculator_vector_3_arg1.firstVector.vector_t_val[i]);
+	}
+	printf("]\n\n%s\n\n[ ", calculator_vector_3_arg1.operator);
+	for(int i=0; i<calculator_vector_3_arg1.size; i++) {
+		printf("%f ", calculator_vector_3_arg1.secondVector.vector_t_val[i]);
+	}
+
+	printf("] \n\n=\n\n[ ");
 	for(int i=0; i<result_1->calculator_3_res_u.res.vector_t_len; i++) {
 		printf("%f ", result_1->calculator_3_res_u.res.vector_t_val[i]);
 	}
-	printf("]\n");
+	printf("]\n\n");
 
 	xdr_free(xdr_calculator_3_res, result_1);
 	free(calculator_vector_3_arg1.operator);
