@@ -41,7 +41,6 @@ calculator_1_svc(operation arg1,  struct svc_req *rqstp)
 	return &result;
 }
 
-
 calculator_2_res *
 calculator_matrix_2_svc(operationMatrix arg1,  struct svc_req *rqstp)
 {
@@ -74,7 +73,9 @@ calculator_matrix_2_svc(operationMatrix arg1,  struct svc_req *rqstp)
         case '*':
             for (i = 0; i < arg1.size; i++) {
                 for (j = 0; j < arg1.size; j++) {
-                    result.calculator_2_res_u.res.matrix_val[i].vector_t_val[j] = arg1.firstMatrix.matrix_val[i].vector_t_val[j] * arg1.secondMatrix.matrix_val[i].vector_t_val[j];
+					for (int k = 0; k < arg1.size; k++) {
+						result.calculator_2_res_u.res.matrix_val[i].vector_t_val[j] += arg1.firstMatrix.matrix_val[i].vector_t_val[k] * arg1.secondMatrix.matrix_val[k].vector_t_val[j];
+					}
                 }
             }
             break;
@@ -95,61 +96,53 @@ calculator_matrix_2_svc(operationMatrix arg1,  struct svc_req *rqstp)
 	return &result;
 }
 
-int calcDet2(const matrix mat) {
-	int det = mat.matrix_val[0].vector_t_val[0] * mat.matrix_val[1].vector_t_val[1] - mat.matrix_val[0].vector_t_val[1] * mat.matrix_val[1].vector_t_val[0];
-	return det;
-}
-
-int calcDet3(const matrix mat) {
-	int det = 0;
-	for(int i=0; i<3; i++) {
-		int j = (i+1) % 3;
-		int k = (i+2) % 3;
-		det += mat.matrix_val[0].vector_t_val[i] * (mat.matrix_val[1].vector_t_val[j] * mat.matrix_val[2].vector_t_val[k] - mat.matrix_val[1].vector_t_val[k] * mat.matrix_val[2].vector_t_val[j]);
-	}
-
-	return det;
-}
-
-int calcDet(const matrix mat) {
-	if(mat.matrix_len == 2)
-		return calcDet2(mat);
-	else if(mat.matrix_len == 3)
-		return calcDet3(mat);
-	else {
-		int det = 0;
-		for(int i=0; i<mat.matrix_len; i++) {
-			matrix subMat;
-			subMat.matrix_len = mat.matrix_len - 1;
-			subMat.matrix_val = malloc((mat.matrix_len - 1) * sizeof(vector_t));
-			for(int j=0; j<mat.matrix_len - 1; j++) {
-				subMat.matrix_val[j].vector_t_len = mat.matrix_len - 1;
-				subMat.matrix_val[j].vector_t_val = malloc((mat.matrix_len - 1) * sizeof(int));
-			}
-
-			for(int j=0; j<mat.matrix_len; j++) {
-				if(j == i)
-					continue;
-				int subI = (j < i) ? j : j - 1;
-				for(int k=1; k<mat.matrix_len; k++) {
-					subMat.matrix_val[subI].vector_t_val[k-1] = mat.matrix_val[j].vector_t_val[k];
-				}
-			}
-
-			det += mat.matrix_val[i].vector_t_val[0] * calcDet(subMat);
-		}
-		return det;
-	}
-}
 
 calculator_3_res *
-calculator_matrix_det_3_svc(operationDet arg1,  struct svc_req *rqstp)
+calculator_vector_3_svc(operationVector arg1,  struct svc_req *rqstp)
 {
-	printf("Llega");
 	static calculator_3_res  result;
 
-	result.calculator_3_res_u.res = calcDet(arg1.detMatrix);
-	
-	printf("Resultado: %f", result.calculator_3_res_u.res);
+	switch (arg1.operator[0]) {
+		case '+':
+			result.calculator_3_res_u.res.vector_t_len = arg1.size;
+			result.calculator_3_res_u.res.vector_t_val = (double *)malloc(arg1.size * sizeof(double));
+			for (int i = 0; i < arg1.size; i++) {
+				result.calculator_3_res_u.res.vector_t_val[i] = arg1.firstVector.vector_t_val[i] + arg1.secondVector.vector_t_val[i];
+			}
+			break;
+		case '-':
+			result.calculator_3_res_u.res.vector_t_len = arg1.size;
+			result.calculator_3_res_u.res.vector_t_val = (double *)malloc(arg1.size * sizeof(double));
+			for (int i = 0; i < arg1.size; i++) {
+				result.calculator_3_res_u.res.vector_t_val[i] = arg1.firstVector.vector_t_val[i] - arg1.secondVector.vector_t_val[i];
+			}
+			break;
+		case '*':
+		    result.calculator_3_res_u.res.vector_t_len = 1;
+			result.calculator_3_res_u.res.vector_t_val = (double *)malloc(sizeof(double));
+			result.calculator_3_res_u.res.vector_t_val[0] = 0;
+			for (int i = 0; i < arg1.size; i++) {
+				result.calculator_3_res_u.res.vector_t_val[0] += arg1.firstVector.vector_t_val[i] * arg1.secondVector.vector_t_val[i];
+			}
+			break;
+		case 'x':
+		    if(arg1.size != 3) {
+				result.errnum = 2;
+		        return &result;
+		    }
+			else {
+				result.calculator_3_res_u.res.vector_t_len = 3;
+				result.calculator_3_res_u.res.vector_t_val = (double *)malloc(3 * sizeof(double));
+				result.calculator_3_res_u.res.vector_t_val[0] = arg1.firstVector.vector_t_val[1] * arg1.secondVector.vector_t_val[2] - arg1.firstVector.vector_t_val[2] * arg1.secondVector.vector_t_val[1];
+				result.calculator_3_res_u.res.vector_t_val[1] = arg1.firstVector.vector_t_val[2] * arg1.secondVector.vector_t_val[0] - arg1.firstVector.vector_t_val[0] * arg1.secondVector.vector_t_val[2];
+				result.calculator_3_res_u.res.vector_t_val[2] = arg1.firstVector.vector_t_val[0] * arg1.secondVector.vector_t_val[1] - arg1.firstVector.vector_t_val[1] * arg1.secondVector.vector_t_val[0];
+				break;
+			}
+		default:
+			result.errnum = 3;
+			return &result;
+			break;
+	}
+
 	return &result;
 }
