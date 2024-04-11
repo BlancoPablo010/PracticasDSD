@@ -37,8 +37,8 @@ if choice == "1":
 
 elif choice == "2":
     print("Operación de Grados")
-    grados = input("Introduzca los grados:")
-    operation = input("Introduzca la operación(sen, cos, tan, RAD):")
+    operation = input("Introduzca la operación(sen, cos, tan, RAD): ")
+    grados = input("Introduzca los grados: ")
     resultado = client.operacionGrados(float(grados), operation)
     if resultado.error == 0:
         print("Resultado: %f" % resultado.res)
@@ -52,7 +52,7 @@ elif choice == "3":
     secondVector = []
     for i in range(int(length)):
         firstVector.append(int(input("Introduzca el elemto %d del primer vector: " % i)))
-    operation = input("Introduzca la operación: ")
+    operation = input("Introduzca la operación(+, -, *, x): ")
     for i in range(int(length)):
         secondVector.append(int(input("Introduzca el elemto %d del segundo vector: " % i)))
     resultado = client.operacionVectorial(firstVector, secondVector, operation)
@@ -72,7 +72,7 @@ elif choice == "4":
         matrix1.append([])
         for j in range(int(length)):
             matrix1[i].append(int(input("Introduzca el elemnto %d %d de la primera matriz: " % (i, j))))
-    operation = input("Introduzca la operación: ")
+    operation = input("Introduzca la operación(+, -, *): ")
     for i in range(int(length)):
         matrix2.append([])
         for j in range(int(length)):
