@@ -1,9 +1,4 @@
 #!/bin/sh -e
-# ejecutar = Macro para compilación y ejecución del programa ejemplo
-# en una sola maquina Unix de nombre localhost.
-#echo
-#echo "Lanzando el ligador de RMI … "
-#rmiregistry &
 
 echo
 echo "Compilando con javac ..."
@@ -25,3 +20,5 @@ echo
 echo "Lanzando el segundo cliente"
 echo
 java -cp . -Djava.security.policy=server.policy Cliente_Ejemplo localhost 3
+
+

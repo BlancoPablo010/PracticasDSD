@@ -7,22 +7,23 @@ public class Ejemplo implements Ejemplo_I {
     public Ejemplo() {
         super();
     }
-    public void escribir_mensaje (String mensaje) {
-        System.out.println("\nEntra Hebra "+mensaje);
-        //Buscamos los procesos 0, 10, 20,...
+
+    public synchronized void escribir_mensaje(String mensaje) {
+        System.out.println("\nEntra Hebra " + mensaje);
+        // Buscamos los procesos 0, 10, 20,...
         if (mensaje.endsWith("0")) {
-            try{
-            System.out.println("Empezamos a dormir");
-            Thread.sleep(5000);
-            System.out.println("Terminamos de dormir");
-            }
-            catch (Exception e) {
+            try {
+                System.out.println("Empezamos a dormir");
+                Thread.sleep(5000);
+                System.out.println("Terminamos de dormir");
+            } catch (Exception e) {
                 System.err.println("Ejemplo exception:");
                 e.printStackTrace();
             }
         }
-        System.out.println("Sale Hebra "+mensaje);
+        System.out.println("Sale Hebra " + mensaje);
     }
+
     public static void main(String[] args) {
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
