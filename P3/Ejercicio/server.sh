@@ -7,12 +7,13 @@ javac *.java
 
 
 
-sleep 2
 echo
-echo "Lanzando el servidor principal"
-java -cp . -Djava.rmi.server.codebase=file:./ -Djava.rmi.server.hostname=127.0.0.1 -Djava.rmi.server.port=1098 -Djava.security.policy=server.policy Servidor &
+echo "Introduzca el número de réplicas que desea lanzar"
 
-sleep 2
+read replicas
+
+java -cp . -Djava.rmi.server.codebase=file:./ -Djava.rmi.server.hostname=127.0.0.1 -Djava.rmi.server.port=1098 -Djava.security.policy=server.policy ReplicaServidor $replicas &
+
 
 echo 
 echo "Pulse la tecla enter para terminar los servidores"

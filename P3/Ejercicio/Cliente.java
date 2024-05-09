@@ -1,10 +1,9 @@
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 
 // Java program to demonstrate BufferedReader
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class Cliente {
     public static void main(String[] args) throws IOException {
@@ -12,81 +11,103 @@ public class Cliente {
             System.setSecurityManager(new SecurityManager());
         }
         try {
+
+            if (args.length != 1) {
+                System.out.println("Uso: Cliente <número réplicas>, asegúrese de que tenga el mismo o menos número de réplicas que el servidor principal");
+                System.exit(0);
+            }
             // Localizar el registro RMI en la máquina donde se ejecuta el servidor principal
+            System.out.println("Localizando el registro RMI en el servidor principal");
             Registry registry = LocateRegistry.getRegistry(1099);
             
             
+            System.out.println("Localizando las replicas");
             // Obtener la referencia remota al objeto del servidor
-            ServidorInterface servidor = (ServidorInterface) registry.lookup("Servidor");
 
-            boolean acceso = false;
-            String nombre = "";
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            // Registro donante 
+            int numReplicas = Integer.parseInt(args[0]);
 
+            ArrayList<ServidorInterface> replicas = new ArrayList<ServidorInterface>();
 
-
-            System.out.println("¿Se ha registrado previamente? (S/N):");
-            String respuesta = reader.readLine();
-
-            for (int i=0; i<respuesta.length(); i++) {
-                System.out.println(respuesta.charAt(i));
+            for (int i = 0; i < numReplicas; i++) {
+                replicas.add((ServidorInterface) registry.lookup("Replica" + i));
             }
 
-            if (respuesta.equalsIgnoreCase("N")) {
-                System.out.println("Registrando un nuevo usuario");
-                System.out.println("Introduzca su nombre:");
-                nombre = reader.readLine();
-                System.out.println("Registrando...");
-                if(servidor.registrarDonante(nombre)) {
-                    acceso = true;
-                    System.out.println("Registrado con éxito");
-                } else {
-                    System.out.println("No se ha podido registrar, ya existe un donante con ese nombre");
-                }
-            } else if (respuesta.equalsIgnoreCase(respuesta)){
-                System.out.println("Inicio de sesión");
-                System.out.println("Introduzca su nombre:");
-                nombre = reader.readLine();
-                if (!servidor.registrarDonante(nombre)) {
-                    acceso = true;
-                    System.out.println("Inicio de sesión con éxito");
-                }
-            }
+            int replica = 0;
 
-            while (acceso) {
-                System.out.println("\n\n¿Qué desea hacer?");
-                System.out.println("1. Ver lista de donantes");
-                System.out.println("2. Donar");
-                System.out.println("3. Ver total donado");
-                System.out.println("4. Salir");
-                int opcion = Integer.parseInt(reader.readLine());
+            boolean salir = true;
+
+            while (salir) {
+                System.out.println("1. Elegir réplica (elegida actualmente: " + replica + ")");
+                System.out.println("2. Registrar donante");
+                System.out.println("3. Eliminar donante");
+                System.out.println("4. Donar");
+                System.out.println("5. Ver total donado");
+                System.out.println("6. Ver lista de donantes");
+                System.out.println("7. Ver top 5 de donantes");
+                System.out.println("8. Salir");
+
+                int opcion = Integer.parseInt(System.console().readLine());
+
                 switch (opcion) {
                     case 1:
-                        System.out.println(servidor.verListaDonantes(nombre));
+                        System.out.println("Elegir réplica(0-" + (numReplicas - 1) + ") (actual: " + replica + ")");
+                        replica = Integer.parseInt(System.console().readLine());
+                        if (replica < 0 || replica > numReplicas) {
+                            System.out.println("Réplica no válida");
+                            salir = false;
+                        }
                         break;
                     case 2:
-                        System.out.println("Introduzca la cantidad a donar:");
-                        double cantidad = Double.parseDouble(reader.readLine());
-                        servidor.donar(nombre, cantidad);
+                        System.out.println("Introduce el nombre del donante");
+                        String nombre = System.console().readLine();
+                        if (replicas.get(replica).registrarDonante(nombre)) {
+                            System.out.println("Donante registrado");
+                        } else {
+                            System.out.println("Donante no registrado, ya existe");
+                        }
                         break;
                     case 3:
-
-                        double total = servidor.verTotalDonado(nombre);
-                        if (total != -1) {
-                            System.out.println("Total donado: " + total);
+                        System.out.println("Introduce el nombre del donante");
+                        nombre = System.console().readLine();
+                        if (replicas.get(replica).eliminarDonante(nombre)) {
+                            System.out.println("Donante eliminado");
                         } else {
-                            System.out.println("No tienes permiso para ver el total donado, recuerde que debe estar registrado y haber donado previamente.");
+                            System.out.println("Donante no eliminado, no se ha encontrado");
                         }
                         break;
                     case 4:
-                        acceso = false;
+                        System.out.println("Introduce el nombre del donante");
+                        nombre = System.console().readLine();
+                        System.out.println("Introduce la cantidad a donar");
+                        double cantidad = Double.parseDouble(System.console().readLine());
+                        if (replicas.get(replica).donacion(nombre, cantidad)) {
+                            System.out.println("Donación realizada");
+                        } else {
+                            System.out.println("Donación no realizada, no se ha encontrado el donante");
+                        }
+                        break;
+                    case 5:
+                        System.out.println("Introduce el nombre del donante");
+                        nombre = System.console().readLine();
+                        System.out.println(replicas.get(replica).mostrarTotalDonado(nombre));
+                        break;
+                    case 6:
+                        System.out.println("Introduce el nombre del donante");
+                        nombre = System.console().readLine();
+                        System.out.println(replicas.get(replica).mostrarDonantes(nombre));
+                        break;
+                    case 7:
+                        System.out.println("Introduce el nombre del donante");
+                        nombre = System.console().readLine();
+                        System.out.println(replicas.get(replica).top5Donantes(nombre));
+                        break;
+                    case 8:
+                        salir = false;
                         break;
                     default:
-                        System.out.println("Opción no válida");
                         break;
                 }
-            
+
             }
 
         } catch (Exception e) {
