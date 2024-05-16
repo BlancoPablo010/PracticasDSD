@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Usuario</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+  <div style="display:flex; width: 100%;">
+    <div style="display: flex; flex-direction: column; width: 60%; gap: 10px; margin: 20px;">
+      Controles de actuadores: 
+      <div>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="persiana">
+          <label class="form-check-label" for="flexSwitchCheckDefault">Persiana</label>
+        </div>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="aireAcondicionado">
+          <label class="form-check-label" for="flexSwitchCheckDefault">Aire acondicionado</label>
+        </div>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="radio">
+          <label class="form-check-label" for="flexSwitchCheckDefault">Radio</label>
+        </div>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="calefaccion" checked disabled>
+          <label class="form-check-label" for="flexSwitchCheckDisabled">Calefacción</label>
+        </div>
+      </div>
+      Sensores: 
+      <div style="display:flex; width: 100%; gap:20px;">
+        <div id="sensor_iluminacion">
+        </div>
+        <div id="sensor_temperatura">
+        </div>
+        <div id="sensor_sonido">
+        </div>
+      </div>
+      Alertas: 
+      <div>
+
+        <div id="alert_container"></div>
+      </div>
+    </div>
+    <div style="margin:20px; width: 40%;">
+      Histórico de sensores: 
+      <div id="historico_sensores" style="display: flex; flex-direction: column; width: 100%; gap: 10px;">
+      </div>
+   </div>
+  </div>
+
+
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+
+  // Función para mostrar las alertas en la interfaz
+  function mostrarAlerta(msg) {
+    const alertElement = document.createElement('div');
+    alertElement.innerHTML = '<b>' + msg + ' </b> ' + new Date().toLocaleString();
+
+    const alertContainer = document.getElementById('alert_container');
+    alertContainer.appendChild(alertElement);
+  }
+
+  // Función para mostrar los sensores en la interfaz
+  function mostrarSensores(data) {
+    const sensorIluminacion = document.getElementById('sensor_iluminacion');
+    sensorIluminacion.textContent = `Iluminación: ${data.ilum} lux`;
+
+    const sensorTemperatura = document.getElementById('sensor_temperatura');
+    sensorTemperatura.textContent = `Temperatura: ${data.temp} ºC`;
+
+    const sensorSonido = document.getElementById('sensor_sonido');
+    sensorSonido.textContent = `Sonido: ${data.sonido} dB`;
+  }
+
+  // Función para mostrar el historico de sensores en la interfaz
+  function mostrarHistoricoSensores(sensores) {
+    const listCont = document.getElementById('historico_sensores');
+    while(listCont.firstChild && listCont.removeChild(listCont.firstChild));
+
+    const listElement = document.createElement('ul');
+    listCont.appendChild(listElement);
+
+    const num = sensores.length;
+    for(var i=0; i<num; i++) {
+      const listItem = document.createElement('li');
+      listItem.textContent = JSON.stringify(sensores[i]);
+      listElement.appendChild(listItem);
+    }
+  }
+
+  const serviceURL = 'http://localhost:8080'
+  const socket = io(serviceURL);
+  
+  
+  var persiana = document.getElementById('persiana');
+  var aireAcondicionado = document.getElementById('aireAcondicionado');
+  var radio = document.getElementById('radio');
+  var calefaccion = document.getElementById('calefaccion');
+  
+  // Evento para mostrar alertas y para que cambien los actuadores
+  socket.on('mostrarAlerta', (data) => {
+    mostrarAlerta(data.mensaje)
+    persiana.checked = data.actuadores.persiana;
+    aireAcondicionado.checked = data.actuadores.aireAcondicionado;
+    radio.checked = data.actuadores.radio;
+    calefaccion.checked = data.actuadores.calefaccion;
+    socket.emit('output-evt', 'Alerta recibida')
+  })
+
+  // Obtener estado inicial de los actuadores
+  socket.emit('getActuadores');
+  socket.on('actuadores', (data) => {
+    persiana.checked = data.persiana;
+    aireAcondicionado.checked = data.aireAcondicionado;
+    radio.checked = data.radio;
+    calefaccion.checked = data.calefaccion;
+  })
+
+  // Obtener estado inicial de los sensores
+  socket.emit('getUltimoSensor');
+  socket.on('ultimoSensor', (data) => {
+    mostrarSensores(data)
+  })
+
+  // Obtener estado inicial del historico de sensores
+  socket.emit('getSensores');
+  socket.on('sensores', data => {
+    mostrarHistoricoSensores(data)
+  })
+
+  // Eventos para cambiar los actuadores
+  persiana.addEventListener('change', (event) => {
+    socket.emit('cambiaPersiana', {persiana: event.target.checked})
+  })
+
+  aireAcondicionado.addEventListener('change', (event) => {
+    socket.emit('cambiaAireAcondicionado', {aireAcondicionado: event.target.checked})
+  })
+
+  radio.addEventListener('change', (event) => {
+    socket.emit('cambiaRadio', {radio: event.target.checked})
+  })
+
+  // Evento para cambiar los sensores
+  socket.on('cambioUltimoSensor', (data) => {
+    mostrarSensores(data)
+    socket.emit('getSensores')
+    socket.on('sensores', data => {
+      mostrarHistoricoSensores(data)
+    })
+  })
+
+
+    
+
+</script>
+</html>
